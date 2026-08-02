@@ -1,0 +1,103 @@
+name: Build MT5 Portable
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'docker/**'
+      - '.github/workflows/build-mt5.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    env:
+      IMAGE: ghcr.io/${{ github.actor }}/metatrader5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t $IMAGE:latest docker/
+
+      - name: Install pefile
+        run: pip install pefile
+
+      - name: Copy MT5 out & extract version
+        id: version
+        run: |
+          CID=$(docker create $IMAGE:latest)
+          docker cp "$CID:/opt/mt5" ./Metatrader-5
+          docker rm "$CID"
+
+          FILE_VER=$(python3 -c "
+          import pefile
+          pe = pefile.PE('./Metatrader-5/terminal64.exe')
+          for fi in pe.FileInfo:
+              for e in fi:
+                  if hasattr(e, 'StringTable'):
+                      for st in e.StringTable:
+                          v = st.entries.get(b'FileVersion')
+                          if v:
+                              print(v.decode())
+                              exit()
+          print('0.0.0.0')
+          ")
+          BUILD_NUM=$(echo "$FILE_VER" | grep -oE '[0-9]+$' || echo "0")
+          echo "build_num=$BUILD_NUM" >> "$GITHUB_OUTPUT"
+          echo "file_ver=$FILE_VER" >> "$GITHUB_OUTPUT"
+          echo "FileVersion: $FILE_VER → Build: $BUILD_NUM"
+
+      - name: Package & hash
+        run: |
+          cd Metatrader-5
+          sha256sum terminal64.exe MetaEditor64.exe metatester64.exe > ../hashes.txt
+          cd ..
+
+          tar -czf metatrader5.tar.gz Metatrader-5/
+          echo "metatrader5.tar.gz ($(du -sh metatrader5.tar.gz | cut -f1))"
+
+          [ -d Metatrader-5/MQL5 ] && find Metatrader-5/MQL5 -name '*.ex5' -delete
+          META_FILES="MetaEditor64.exe"
+          [ -d Metatrader-5/MQL5 ] && META_FILES="$META_FILES MQL5/"
+          [ -d Metatrader-5/Profiles ] && META_FILES="$META_FILES Profiles/"
+          tar -czf metaeditor.tar.gz -C Metatrader-5 $META_FILES
+          echo "metaeditor.tar.gz ($(du -sh metaeditor.tar.gz | cut -f1))"
+
+          cat > release-body.md << EOF
+          ## MT5 Portable — ${{ steps.version.outputs.file_ver }}
+
+          ### SHA256 Checksums
+
+          \`\`\`
+          $(cat hashes.txt)
+          \`\`\`
+
+          ### Packages
+
+          | Package | File |
+          |---------|------|
+          | Full (terminal + editor + tester) | [metatrader5.tar.gz](https://github.com/thodinh/metatrader5-portable/releases/latest/download/metatrader5.tar.gz) |
+          | MetaEditor + include | [metaeditor.tar.gz](https://github.com/thodinh/metatrader5-portable/releases/latest/download/metaeditor.tar.gz) |
+          EOF
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "MT5 Portable — ${{ steps.version.outputs.file_ver }}"
+          tag_name: "metatrader5-b${{ steps.version.outputs.build_num }}"
+          body_path: release-body.md
+          files: |
+            metatrader5.tar.gz
+            metaeditor.tar.gz
+            hashes.txt
+
+      - name: Push to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker tag $IMAGE:latest $IMAGE:b${{ steps.version.outputs.build_num }}
+          docker push $IMAGE:latest
+          docker push $IMAGE:b${{ steps.version.outputs.build_num }}

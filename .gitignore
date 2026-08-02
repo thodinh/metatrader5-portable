@@ -1,0 +1,4 @@
+build-test-docker.sh
+mt5-packages/
+*.tar.gz
+*.sha256
