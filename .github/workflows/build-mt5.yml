@@ -15,7 +15,7 @@ jobs:
       contents: write
       packages: write
     env:
-      IMAGE: ghcr.io/${{ github.actor }}/metatrader5
+      IMAGE: ghcr.io/${{ github.actor }}/mt5
 
     steps:
       - uses: actions/checkout@v4
@@ -80,8 +80,8 @@ jobs:
 
           | Package | File |
           |---------|------|
-          | Full (terminal + editor + tester) | [metatrader5.tar.gz](https://github.com/thodinh/metatrader5-portable/releases/latest/download/metatrader5.tar.gz) |
-          | MetaEditor + include | [metaeditor.tar.gz](https://github.com/thodinh/metatrader5-portable/releases/latest/download/metaeditor.tar.gz) |
+          | Full| [metatrader5.tar.gz](https://github.com/thodinh/metatrader5-portable/releases/latest/download/metatrader5.tar.gz) |
+          | MetaEditor | [metaeditor.tar.gz](https://github.com/thodinh/metatrader5-portable/releases/latest/download/metaeditor.tar.gz) |
           EOF
 
       - name: Create GitHub Release

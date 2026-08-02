@@ -25,15 +25,15 @@ tar -xzf metatrader5.tar.gz
 
 ### Docker
 
-Image available on GHCR: `ghcr.io/thodinh/metatrader5` - runtime with Wine 10+, MT5 pre-installed at `/opt/mt5`
+Image available on GHCR: `ghcr.io/thodinh/mt5` - runtime with Wine 10+, MT5 pre-installed at `/opt/mt5`
 
 ```bash
-docker pull ghcr.io/thodinh/metatrader5:latest
+docker pull ghcr.io/thodinh/mt5:latest
 ```
 Build your own Docker image from the base image:
 
 ```dockerfile
-FROM ghcr.io/thodinh/metatrader5:latest
+FROM ghcr.io/thodinh/mt5:latest
 
 COPY my-ea.ex5 /opt/mt5/MQL5/Experts/
 CMD ["wine", "/opt/mt5/terminal64.exe"]
