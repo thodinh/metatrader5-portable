@@ -25,6 +25,14 @@ RUN { printf '\xFF\xFE'; printf '[LiveUpdate]\r\nLiveUpdateMode=2\r\n' | iconv -
 
 RUN { printf '\xFF\xFE'; printf '[Experts]\r\nEnabled=1\r\n' | iconv -f UTF-8 -t UTF-16LE; } > "$MT5_DIR/Config/common.ini"
 
+# First run generates MQL5/ (Experts, Include, Indicators...) next to the exe thanks to /portable
+RUN printf 'wine "$MT5_DIR/terminal64.exe" /portable &\nfor i in $(seq 1 36); do sleep 10; [ -d "$MT5_DIR/MQL5/Include" ] && break; done\nwineserver -k\n' > /tmp/first-run.sh \
+    && chmod +x /tmp/first-run.sh \
+    && xvfb-run /tmp/first-run.sh \
+    && rm /tmp/first-run.sh \
+    && rm -rf "$MT5_DIR/logs" "$MT5_DIR/MQL5/logs" \
+    && ls "$MT5_DIR/MQL5"
+
 RUN [ -f "$MT5_DIR/terminal64.exe" ] || exit 1
 
 # Stage 2: Runtime base with Wine 10+ (Debian Trixie)

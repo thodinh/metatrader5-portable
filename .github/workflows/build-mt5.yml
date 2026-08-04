@@ -57,14 +57,13 @@ jobs:
           sha256sum terminal64.exe MetaEditor64.exe metatester64.exe > ../hashes.txt
           cd ..
 
+          tar -czf metaeditor.tar.gz --exclude='*.ex5' -C Metatrader-5 MetaEditor64.exe MQL5/ Profiles/
+          echo "metaeditor.tar.gz ($(du -sh metaeditor.tar.gz | cut -f1))"
+
+          # terminal64.exe regenerates MQL5/ on first run, so drop it to slim the full package
+          rm -rf Metatrader-5/MQL5
           tar -czf metatrader5.tar.gz Metatrader-5/
           echo "metatrader5.tar.gz ($(du -sh metatrader5.tar.gz | cut -f1))"
-
-          META_FILES="MetaEditor64.exe"
-          [ -d Metatrader-5/MQL5 ] && META_FILES="$META_FILES MQL5/"
-          [ -d Metatrader-5/Profiles ] && META_FILES="$META_FILES Profiles/"
-          tar -czf metaeditor.tar.gz --exclude='*.ex5' -C Metatrader-5 $META_FILES
-          echo "metaeditor.tar.gz ($(du -sh metaeditor.tar.gz | cut -f1))"
 
           cat > release-body.md << EOF
           ## MT5 Portable — ${{ steps.version.outputs.file_ver }}
