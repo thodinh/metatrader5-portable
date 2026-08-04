@@ -19,12 +19,6 @@ RUN printf 'winecfg -v=win11\nwine MicrosoftEdgeWebview2Setup.exe /silent /insta
     && xvfb-run /tmp/install-mt5.sh \
     && rm /tmp/install-mt5.sh
 
-RUN mkdir -p "$MT5_DIR/Config"
-
-RUN { printf '\xFF\xFE'; printf '[LiveUpdate]\r\nLiveUpdateMode=2\r\n' | iconv -f UTF-8 -t UTF-16LE; } > "$MT5_DIR/Config/terminal.ini"
-
-RUN { printf '\xFF\xFE'; printf '[Experts]\r\nEnabled=1\r\n' | iconv -f UTF-8 -t UTF-16LE; } > "$MT5_DIR/Config/common.ini"
-
 # First run generates MQL5/ (Experts, Include, Indicators...) next to the exe thanks to /portable
 RUN printf 'wine "$MT5_DIR/terminal64.exe" /portable &\nfor i in $(seq 1 36); do sleep 10; [ -d "$MT5_DIR/MQL5/Include" ] && break; done\nwineserver -k\n' > /tmp/first-run.sh \
     && chmod +x /tmp/first-run.sh \
