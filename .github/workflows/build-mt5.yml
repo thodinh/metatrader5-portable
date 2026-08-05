@@ -30,7 +30,7 @@ jobs:
         id: version
         run: |
           CID=$(docker create $IMAGE:latest)
-          docker cp "$CID:/opt/mt5" ./Metatrader-5
+          docker cp "$CID:/opt/wineprefix/drive_c/Metatrader-5" ./Metatrader-5
           docker rm "$CID"
 
           FILE_VER=$(python3 -c "
