@@ -4,3 +4,7 @@ mt5-packages/
 *.sha256
 .local/
 .config/
+.fluxbox
+.fehbg
+.env
+__pycache__

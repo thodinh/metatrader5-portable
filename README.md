@@ -1,6 +1,21 @@
-# MetaTrader 5 Portable
+# MetaTrader 5 Container
 
-MetaTrader 5 Portable is an unofficial, pre-built MT5 portable package using Wine. All packages are created by installing MetaTrader 5 from the official installer, then built and packaged in GitHub Actions to ensure a safe, malware-free build. Always verify the SHA256 checksum provided in the release notes to confirm the integrity of your downloaded package.
+MetaTrader 5 Container is an unofficial, pre-built MT5 container using Wine. 
+
+All packages are created by installing MetaTrader 5 from the official installer, then built and packaged in GitHub Actions to ensure a safe, malware-free build.
+
+Delivery with 2 format:
+1. Docker image [ghcr.io/thodinh/mt5](https://github.com/thodinh/metatrader5-portable/releases/latest/download/metatrader5.tar.gz).
+2. Portable package [metatrader5.tar.gz](https://github.com/thodinh/metatrader5-portable/releases/latest/download/metatrader5.tar.gz), can use both for Window and Linux (Wine 10+).
+
+Verify the SHA256 checksum provided in the release notes to confirm the integrity of your downloaded package.
+
+## Official Resources
+
+- [MetaTrader 5](https://www.metatrader5.com/)
+- [MetaTrader 5 Downloads](https://www.metatrader5.com/en/download)
+
+I don't work for MetaQuotes. This is a community effort.
 
 ## Download
 

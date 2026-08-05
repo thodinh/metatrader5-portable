@@ -1,0 +1,39 @@
+name: Test MT5 Examples
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Build MT5"]
+    types:
+      - completed
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env file for credentials
+        run: |
+          cat << EOF > example/.env
+          MT5_LOGIN=${{ secrets.MT5_LOGIN }}
+          MT5_PASSWORD=${{ secrets.MT5_PASSWORD }}
+          MT5_SERVER=${{ secrets.MT5_SERVER }}
+          EOF
+
+      - name: Pull latest Docker image
+        run: docker pull ghcr.io/${{ github.actor }}/mt5:latest
+
+      - name: Run all examples
+        run: |
+          # Map GitHub workspace to /root/workspace/mt5 to match hardcoded paths in scripts
+          docker run -v ${{ github.workspace }}:/root/workspace/mt5 --rm ghcr.io/${{ github.actor }}/mt5:latest bash /root/workspace/mt5/example/run_all.sh
+
+      - name: Upload screenshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mt5-screenshot
+          path: example/screenshot_example.png
+          if-no-files-found: warn

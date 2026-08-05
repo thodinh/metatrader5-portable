@@ -1,4 +1,4 @@
-name: Build MT5 Portable
+name: Build MT5
 
 on:
   push:
@@ -66,7 +66,7 @@ jobs:
           echo "metatrader5.tar.gz ($(du -sh metatrader5.tar.gz | cut -f1))"
 
           cat > release-body.md << EOF
-          ## MT5 Portable — ${{ steps.version.outputs.file_ver }}
+          ## MetaTrader 5 — ${{ steps.version.outputs.file_ver }}
 
           ### SHA256 Checksums
 
@@ -85,7 +85,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "MT5 Portable — ${{ steps.version.outputs.file_ver }}"
+          name: "MetaTrader 5 — ${{ steps.version.outputs.file_ver }}"
           tag_name: "metatrader5-b${{ steps.version.outputs.build_num }}"
           body_path: release-body.md
           files: |
