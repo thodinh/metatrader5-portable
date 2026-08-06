@@ -9,7 +9,7 @@ ENV MT5_DIR=${DRIVE_C}/Metatrader-5
 ENV URL="https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe" \
     URL_WEBVIEW="https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/c1336fd6-a2eb-4669-9b03-949fc70ace0e/MicrosoftEdgeWebview2Setup.exe"
 
-RUN apt-get update && apt-get install -y --no-install-recommends wget fluxbox scrot \
+RUN apt-get update && apt-get install -y --no-install-recommends wget \
     && wget -q $URL && wget -q $URL_WEBVIEW \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -39,7 +39,7 @@ ENV MT5_DIR=${DRIVE_C}/Metatrader-5
 
 RUN dpkg --add-architecture i386 && \
     apt-get update && apt-get install -y --no-install-recommends \
-    wget gnupg2 software-properties-common xvfb cabextract apt-transport-https ca-certificates && \
+    wget gnupg2 software-properties-common xvfb cabextract apt-transport-https ca-certificates fluxbox scrot && \
     mkdir -pm755 /etc/apt/keyrings && \
     wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key && \
     wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/resolute/winehq-resolute.sources && \
