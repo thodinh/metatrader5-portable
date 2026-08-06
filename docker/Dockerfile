@@ -9,7 +9,7 @@ ENV MT5_DIR=${DRIVE_C}/Metatrader-5
 ENV URL="https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe" \
     URL_WEBVIEW="https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/c1336fd6-a2eb-4669-9b03-949fc70ace0e/MicrosoftEdgeWebview2Setup.exe"
 
-RUN apt-get update && apt-get install -y --no-install-recommends wget \
+RUN apt-get update && apt-get install -y --no-install-recommends wget fluxbox scrot \
     && wget -q $URL && wget -q $URL_WEBVIEW \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -50,8 +50,7 @@ RUN dpkg --add-architecture i386 && \
 COPY --from=builder ${MT5_DIR} ${MT5_DIR}
 
 RUN mkdir -p ${MT5_DIR}/Config && \
-    printf '\xFF\xFE[LiveUpdate]\r\nLiveUpdateMode=2\r\n' | iconv -f UTF-8 -t UTF-16LE > ${MT5_DIR}/Config/terminal.ini && \
-    printf '\xFF\xFE[Experts]\r\nEnabled=1\r\n' | iconv -f UTF-8 -t UTF-16LE > ${MT5_DIR}/Config/common.ini
+    printf '\377\376' > ${MT5_DIR}/Config/common.ini && printf '[Experts]\r\nEnabled=1\r\n' | iconv -f UTF-8 -t UTF-16LE >> ${MT5_DIR}/Config/common.ini
 
 RUN xvfb-run wine winecfg -v=win11 && \
     wineserver -w && \
