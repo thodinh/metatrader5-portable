@@ -6,10 +6,7 @@ def main():
     # establish connection to the MetaTrader 5 terminal
     if not mt5.initialize(
         path=config.MT5_PATH,
-        portable=True,
-        login=config.MT5_LOGIN,
-        password=config.MT5_PASSWORD,
-        server=config.MT5_SERVER
+        portable=True
     ):
         print("initialize() failed, error code =", mt5.last_error())
         sys.exit(1)
