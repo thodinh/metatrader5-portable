@@ -54,6 +54,21 @@ COPY my-ea.ex5 /opt/mt5/MQL5/Experts/
 CMD ["wine", "/opt/mt5/terminal64.exe"]
 ```
 
+### macOS / Apple Silicon
+
+The image is x86_64 only. On Apple Silicon (M1/M2/M3/M4), Docker Desktop does not support x86 emulation properly. Use **Colima** instead:
+
+```bash
+brew install colima
+colima start
+```
+
+Then run with explicit platform:
+
+```bash
+docker run --platform linux/amd64 ghcr.io/thodinh/mt5:latest ...
+```
+
 ### Directory Structure
 
 ```
