@@ -30,7 +30,7 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive \
     WINEPREFIX=/opt/wineprefix \
     WINEARCH=win64 \
-    WINEDLLOVERRIDES="mscoree,mshtml=" \
+    WINEDLLOVERRIDES="mscoree,mshtml=;winealsa.drv=" \
     WINEDEBUG=-all \
     DISPLAY=:0
 

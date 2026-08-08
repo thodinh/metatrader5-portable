@@ -3,7 +3,7 @@ rm -f /tmp/.X0-lock
 rm -f /tmp/.X11-unix/X0 2>/dev/null
 
 echo "Starting Xvfb on :0..."
-Xvfb :0 -screen 0 1280x720x24 &
+Xvfb :0 -screen 0 1280x720x24 > /dev/null 2>&1 &
 sleep 2
 
 MT5_COMMON="/opt/wineprefix/drive_c/Metatrader-5/Config/common.ini"

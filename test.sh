@@ -32,6 +32,6 @@ echo "Pulling latest image: $IMAGE..."
 docker pull $IMAGE
 
 echo "Running tests in Docker container..."
-docker run --platform linux/amd64 -v "$WORKSPACE_DIR:/root/workspace/mt5" --rm $IMAGE bash /root/workspace/mt5/example/run_all.sh
+docker run --platform linux/amd64 -v "$WORKSPACE_DIR:/root/workspace/mt5" -v "$WORKSPACE_DIR/docker/entrypoint.sh:/root/entrypoint.sh:ro" --rm $IMAGE bash /root/workspace/mt5/example/run_all.sh
 
 echo "Done!"
